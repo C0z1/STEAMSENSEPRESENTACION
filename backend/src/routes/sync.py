@@ -54,7 +54,7 @@ async def repair_orphaned_games(background_tasks: BackgroundTasks):
 @router.post("/predictions")
 async def generate_all_predictions(
     background_tasks: BackgroundTasks,
-    limit: int = Query(200, ge=1, le=1000),
+    limit: int = Query(200, ge=1, le=2000),
 ):
     """Genera predicciones ML para todos los juegos con historial suficiente."""
     async def do_batch():
