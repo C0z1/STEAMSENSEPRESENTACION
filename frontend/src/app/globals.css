@@ -1,0 +1,202 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Fuentes ─────────────────────────────────────────────────────────────── */
+:root {
+  --font-display: 'Syne', sans-serif;
+  --font-body:    'DM Sans', sans-serif;
+  --font-mono:    'DM Mono', monospace;
+
+  /* ── Tema oscuro (default) ─────────────────────────────────────────────── */
+  --color-bg:      #0a0f1a;
+  --color-surface: #111827;
+  --color-card:    #161e2e;
+  --color-border:  #1f2d45;
+  --color-muted:   #1e2d42;
+  --color-text:    #c9d6e8;
+  --color-subtle:  #5c7a9e;
+
+  /* Accent colors — iguales en ambos temas */
+  --color-cyan:    #00d4ff;
+  --color-green:   #00ff87;
+  --color-amber:   #ffb800;
+  --color-red:     #ff4757;
+
+  /* Glass (dark) */
+  --glass-bg:          rgba(22, 30, 46, 0.8);
+  --glass-border:      rgba(31, 45, 69, 0.8);
+  --glass-hover-bg:    rgba(22, 30, 46, 0.95);
+  --glass-hover-border:rgba(0, 212, 255, 0.25);
+
+  /* Scrollbar */
+  --scrollbar-track:   #0a0f1a;
+  --scrollbar-thumb:   #1f2d45;
+  --scrollbar-hover:   #2d4a6b;
+
+  /* Recharts */
+  --recharts-tooltip-bg:     #161e2e;
+  --recharts-tooltip-border: #1f2d45;
+  --recharts-grid-line:      #1f2d45;
+}
+
+/* ── Tema claro ──────────────────────────────────────────────────────────── */
+html.light {
+  --color-bg:      #f0f4f8;
+  --color-surface: #e2e8f0;
+  --color-card:    #ffffff;
+  --color-border:  #cbd5e1;
+  --color-muted:   #e8edf4;
+  --color-text:    #1e293b;
+  --color-subtle:  #64748b;
+
+  --glass-bg:           rgba(255, 255, 255, 0.85);
+  --glass-border:       rgba(203, 213, 225, 0.9);
+  --glass-hover-bg:     rgba(255, 255, 255, 0.98);
+  --glass-hover-border: rgba(0, 180, 216, 0.4);
+
+  --scrollbar-track:   #f0f4f8;
+  --scrollbar-thumb:   #cbd5e1;
+  --scrollbar-hover:   #94a3b8;
+
+  --recharts-tooltip-bg:     #ffffff;
+  --recharts-tooltip-border: #cbd5e1;
+  --recharts-grid-line:      #e2e8f0;
+}
+
+/* ── Reset ───────────────────────────────────────────────────────────────── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-hover); }
+
+::selection { background: rgba(0, 212, 255, 0.25); color: #fff; }
+
+/* ── Utilities ───────────────────────────────────────────────────────────── */
+@layer utilities {
+  .text-gradient-cyan {
+    background: linear-gradient(135deg, #00d4ff, #00ff87);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .text-gradient-gold {
+    background: linear-gradient(135deg, #ffb800, #ff6b35);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Glass — usa las CSS vars para que cambie con el tema */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    transition: background 0.3s ease, border-color 0.3s ease;
+  }
+  .glass-hover {
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .glass-hover:hover {
+    background: var(--glass-hover-bg);
+    border-color: var(--glass-hover-border);
+  }
+
+  .glow-cyan  { box-shadow: 0 0 20px rgba(0, 212, 255, 0.15), 0 0 60px rgba(0, 212, 255, 0.05); }
+  .glow-green { box-shadow: 0 0 20px rgba(0, 255, 135, 0.15), 0 0 60px rgba(0, 255, 135, 0.05); }
+  .glow-amber { box-shadow: 0 0 20px rgba(255, 184, 0, 0.15),  0 0 60px rgba(255, 184, 0, 0.05); }
+
+  .animate-fade-in        { animation: fadeIn  0.4s ease         forwards; }
+  .animate-slide-up       { animation: slideUp 0.4s ease         forwards; }
+  .animate-slide-up-delay-1 { animation: slideUp 0.4s ease 0.05s forwards; opacity: 0; }
+  .animate-slide-up-delay-2 { animation: slideUp 0.4s ease 0.10s forwards; opacity: 0; }
+  .animate-slide-up-delay-3 { animation: slideUp 0.4s ease 0.15s forwards; opacity: 0; }
+
+  .scanline {
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 2px,
+      rgba(0, 0, 0, 0.03) 2px, rgba(0, 0, 0, 0.03) 4px
+    );
+  }
+
+  .bg-grid-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%231f2d45' fill-opacity='0.3'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /* Versión light del grid */
+  html.light .bg-grid-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23cbd5e1' fill-opacity='0.4'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+}
+
+/* ── Keyframes ───────────────────────────────────────────────────────────── */
+@keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 10px rgba(0, 255, 135, 0.2); }
+  50%       { box-shadow: 0 0 25px rgba(0, 255, 135, 0.5), 0 0 50px rgba(0, 255, 135, 0.2); }
+}
+@keyframes shimmer {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(100%); }
+}
+
+.animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+.shimmer { position: relative; overflow: hidden; }
+.shimmer::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04), transparent);
+  animation: shimmer 2s infinite;
+}
+
+/* ── Recharts ────────────────────────────────────────────────────────────── */
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  background: var(--recharts-tooltip-bg)     !important;
+  border:     1px solid var(--recharts-tooltip-border) !important;
+  border-radius: 8px !important;
+  color: var(--color-text) !important;
+}
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical   line { stroke: var(--recharts-grid-line); }
+
+/* ── Steam color overrides via CSS vars ──────────────────────────────────── */
+/*
+  Tailwind genera clases como bg-steam-bg usando los valores del config.
+  Para el tema light, sobreescribimos directamente el background del body
+  y confiamos en las clases .glass y las vars para el resto.
+  Los componentes que usen bg-steam-bg necesitan esta regla para actualizarse:
+*/
+html.light body { background-color: var(--color-bg); }
+
+/* Cards y superficies: sobreescribir bg-steam-card y bg-steam-muted en light */
+html.light .bg-steam-bg      { background-color: var(--color-bg) !important; }
+html.light .bg-steam-card    { background-color: var(--color-card) !important; }
+html.light .bg-steam-muted   { background-color: var(--color-muted) !important; }
+html.light .bg-steam-surface { background-color: var(--color-surface) !important; }
+html.light .border-steam-border { border-color: var(--color-border) !important; }
+html.light .text-steam-text  { color: var(--color-text) !important; }
+html.light .text-steam-subtle { color: var(--color-subtle) !important; }
+
+/* Tooltip light */
+html.light .recharts-text { fill: var(--color-subtle) !important; }

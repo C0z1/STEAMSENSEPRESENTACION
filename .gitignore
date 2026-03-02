@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# Secrets — NUNCA subir
+.env
+backend/.env
+frontend/.env
+frontend/.env.local
+frontend/.env.production
+
+# DuckDB / datos
+*.duckdb
+*.duckdb.wal
+backend/data/
+data/
+
+# ML artifacts entrenados (opcionales — pueden regenerarse)
+backend/src/ml/artifacts/*.joblib
+
+# Node
+node_modules/
+.next/
+frontend/.next/
+frontend/out/
+
+# Misc
+.DS_Store
+*.log
+*.swp
+.idea/
+.vscode/

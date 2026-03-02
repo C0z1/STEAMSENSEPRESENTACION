@@ -1,0 +1,44 @@
+services:
+  - type: web
+    name: steamsense-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: starter          # necesitas Starter para el persistent disk
+    region: oregon
+    envVars:
+      - key: ENV
+        value: production
+      - key: DUCKDB_PATH
+        value: /data/steamsense.duckdb   # montado en el disk
+      - key: DUCKDB_MEMORY_LIMIT
+        value: 512MB
+      - key: DUCKDB_THREADS
+        value: "2"
+      - key: TOP_N_GAMES
+        value: "200"
+      - key: REQUEST_BATCH_SIZE
+        value: "10"
+      - key: REQUEST_DELAY
+        value: "0.5"
+      - key: ITAD_COUNTRY
+        value: US
+      - key: ITAD_HISTORY_SINCE
+        value: "2022-01-01T00:00:00Z"
+      # ── Configurar manualmente en el dashboard de Render ──────────────
+      - key: STEAM_API_KEY
+        sync: false    # ← pegar tu API key en Render dashboard
+      - key: ITAD_API_KEY
+        sync: false    # ← pegar tu API key en Render dashboard
+      - key: JWT_SECRET
+        sync: false    # ← generar con: openssl rand -hex 32
+      - key: FRONTEND_URL
+        sync: false    # ← URL de tu frontend en Vercel, ej: https://steamsense.vercel.app
+      - key: BACKEND_URL
+        sync: false    # ← URL de este servicio, ej: https://steamsense-backend.onrender.com
+      - key: CORS_ORIGINS
+        sync: false    # ← igual que FRONTEND_URL
+    disk:
+      name: steamsense-data
+      mountPath: /data
+      sizeGB: 1          # plan Starter incluye 1GB de disco persistente
