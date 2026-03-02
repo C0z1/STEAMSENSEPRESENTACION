@@ -1,7 +1,6 @@
-
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -152,8 +151,6 @@ function LibraryTab({ token }: { token: string }) {
 
   return (
     <div className="space-y-6">
-
-      {/* ── Stats row ────────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-3 gap-4">
         {[
           { label: 'Total Games',   value: stats.total_games   || 0,         icon: Library  },
@@ -168,7 +165,6 @@ function LibraryTab({ token }: { token: string }) {
         ))}
       </div>
 
-      {/* ── Actions ──────────────────────────────────────────────────────────── */}
       <div className="flex gap-3 flex-wrap">
         <button onClick={handleSync} disabled={syncing}
           className="flex items-center gap-2 px-4 py-2 glass rounded-xl text-sm font-mono text-steam-subtle hover:text-steam-text transition-all disabled:opacity-50">
@@ -184,7 +180,6 @@ function LibraryTab({ token }: { token: string }) {
 
       {showSetup && <SetupGuide />}
 
-      {/* ── Warning: importado pero sin datos ────────────────────────────────── */}
       {games.length > 0 && tracked.length === 0 && (
         <div className="glass rounded-xl px-5 py-4 border border-steam-amber/20 bg-steam-amber/5">
           <div className="flex items-start gap-3">
@@ -200,12 +195,8 @@ function LibraryTab({ token }: { token: string }) {
         </div>
       )}
 
-      {/* ── Profile Insights ─────────────────────────────────────────────────── */}
-      {games.length > 0 && (
-        <ProfileInsights games={games} />
-      )}
+      {games.length > 0 && <ProfileInsights games={games} />}
 
-      {/* ── Games list ───────────────────────────────────────────────────────── */}
       {games.length === 0 ? (
         <EmptyState msg="No library data yet. Click 'Sync with Steam' to import your games. Make sure your Steam profile is public." icon={Library} />
       ) : (
@@ -214,8 +205,6 @@ function LibraryTab({ token }: { token: string }) {
           {games.map((g: any) => (
             <div key={g.appid}
               className="glass glass-hover rounded-xl flex items-center gap-4 px-4 py-3 group">
-
-              {/* Image */}
               <div className="w-16 h-9 rounded-lg overflow-hidden bg-steam-muted flex-shrink-0">
                 {steamImageUrl(g.appid) ? (
                   <img src={steamImageUrl(g.appid)!} alt={g.game_title} className="w-full h-full object-cover" />
@@ -223,8 +212,6 @@ function LibraryTab({ token }: { token: string }) {
                   <div className="w-full h-full bg-steam-muted" />
                 )}
               </div>
-
-              {/* Title + playtime */}
               <div className="flex-1 min-w-0">
                 <p className="text-steam-text text-sm font-semibold truncate">{g.game_title}</p>
                 <p className="text-steam-subtle text-xs font-mono">
@@ -234,8 +221,6 @@ function LibraryTab({ token }: { token: string }) {
                   {g.last_played && ` · last ${timeAgo(g.last_played)}`}
                 </p>
               </div>
-
-              {/* Price info */}
               {g.game_id ? (
                 <div className="text-right flex-shrink-0">
                   <p className="text-steam-subtle text-xs font-mono">avg price</p>
@@ -244,8 +229,6 @@ function LibraryTab({ token }: { token: string }) {
               ) : (
                 <span className="text-steam-subtle/40 text-xs font-mono flex-shrink-0">no data</span>
               )}
-
-              {/* Link */}
               {g.game_id && (
                 <Link href={`/game/${g.game_id}`}
                   className="flex-shrink-0 text-steam-subtle hover:text-steam-cyan transition-colors opacity-0 group-hover:opacity-100">
@@ -293,8 +276,6 @@ function WishlistTab({ token }: { token: string }) {
 
   return (
     <div className="space-y-6">
-
-      {/* Sync feedback */}
       {syncMeta && (
         <div className={`glass rounded-xl px-5 py-4 border ${
           syncMeta.private_profile
@@ -345,7 +326,6 @@ function WishlistTab({ token }: { token: string }) {
         </div>
       )}
 
-      {/* Alerts banner */}
       {alerts.length > 0 && (
         <div className="glass rounded-xl px-5 py-4 border border-steam-amber/20 bg-steam-amber/5">
           <div className="flex items-center gap-2 mb-3">
@@ -371,7 +351,6 @@ function WishlistTab({ token }: { token: string }) {
           <RefreshCw size={14} className={syncing ? 'animate-spin text-steam-cyan' : ''} />
           {syncing ? 'Syncing...' : 'Sync wishlist'}
         </button>
-        {/* Alertas de precio via Notifications API */}
         {data.length > 0 && <PriceAlertButton wishlist={data} />}
       </div>
 
@@ -510,9 +489,9 @@ function EmptyState({ msg, icon: Icon }: { msg: string; icon: any }) {
   )
 }
 
-// ── Page ──────────────────────────────────────────────────────────────────────
+// ── Inner page (uses useSearchParams — must be inside Suspense) ───────────────
 
-export default function DashboardPage() {
+function DashboardContent() {
   const searchParams = useSearchParams()
   const router       = useRouter()
   const [user, setUser]   = useState<SteamUser | null>(null)
@@ -520,7 +499,6 @@ export default function DashboardPage() {
   const [tab, setTab]     = useState<Tab>('library')
 
   useEffect(() => {
-    // Handle token from Steam callback
     const urlToken = searchParams.get('token')
     if (urlToken) {
       localStorage.setItem('steamsense_token', urlToken)
@@ -532,7 +510,6 @@ export default function DashboardPage() {
     setToken(t)
     setUser(u)
 
-    // Tab from URL
     const tabParam = searchParams.get('tab') as Tab | null
     if (tabParam && ['library', 'wishlist', 'recs'].includes(tabParam)) {
       setTab(tabParam)
@@ -550,7 +527,6 @@ export default function DashboardPage() {
       <Navbar />
       <div className="max-w-4xl mx-auto px-6 pt-24 pb-20">
 
-        {/* Header */}
         <div className="mb-8">
           {user && (
             <div className="flex items-center gap-4 mb-6">
@@ -565,7 +541,6 @@ export default function DashboardPage() {
             </div>
           )}
 
-          {/* Tabs */}
           <div className="flex gap-2 flex-wrap">
             {tabs.map(({ key, label, icon: Icon }) => (
               <button key={key} onClick={() => setTab(key)}
@@ -581,7 +556,6 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Content */}
         {!token ? (
           <div className="text-center py-20 space-y-4">
             <p className="text-steam-subtle">Please sign in with Steam to view your dashboard.</p>
@@ -599,5 +573,19 @@ export default function DashboardPage() {
         )}
       </div>
     </div>
+  )
+}
+
+// ── Page export (wraps in Suspense — required for useSearchParams) ─────────────
+
+export default function DashboardPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-steam-bg flex items-center justify-center">
+        <div className="text-steam-subtle text-sm font-mono animate-pulse">Loading...</div>
+      </div>
+    }>
+      <DashboardContent />
+    </Suspense>
   )
 }
