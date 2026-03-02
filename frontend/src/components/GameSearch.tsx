@@ -15,7 +15,7 @@ export default function GameSearch() {
   const [syncing, setSyncing] = useState<string | null>(null)
   const [open, setOpen]       = useState(false)
   const [error, setError]     = useState('')
-  const debounce   = useRef<ReturnType<typeof setTimeout>>(null)
+  const debounce = useRef<ReturnType<typeof setTimeout> | null>(null)
   const router     = useRouter()
   const wrapperRef = useRef<HTMLDivElement>(null)
 
